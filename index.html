@@ -262,6 +262,12 @@
   @media (max-width: 640px) {
     .hero__title img { height: 220px !important; }
     .logo img { height: 48px !important; }
+    .hero { justify-content: center; }
+    .hero__content {
+      margin-top: 0;
+      margin-bottom: clamp(60px, 12vh, 120px);
+    }
+    .hero__strip { bottom: 48px; }
   }
 
   /* hero bottom strip — "Przewiń" centered, fades on scroll */
