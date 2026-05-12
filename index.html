@@ -221,20 +221,82 @@
   .mobile-nav {
     display: none;
     position: fixed; inset: 0; z-index: 55;
-    background: rgba(14,15,18,0.97);
-    backdrop-filter: blur(8px);
-    flex-direction: column; align-items: center; justify-content: center;
-    gap: 0;
+    background: #0a0a0a;
+    flex-direction: column;
+    overflow-y: auto;
   }
   .mobile-nav.is-open { display: flex; }
-  .mobile-nav a {
-    font-family: var(--display); font-size: 32px; font-weight: 600;
-    color: var(--bg); letter-spacing: -0.02em;
-    padding: 18px 32px; opacity: 0.85;
-    border-bottom: 1px solid rgba(255,255,255,0.08); width: 100%; text-align: center;
+
+  .mobile-nav__header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 28px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    flex-shrink: 0;
   }
-  .mobile-nav a:first-child { border-top: 1px solid rgba(255,255,255,0.08); }
-  .mobile-nav a:hover { opacity: 1; color: var(--accent); }
+  .mobile-nav__logo img { height: 52px; width: auto; display: block; }
+  .mobile-nav__close {
+    background: none; border: none; cursor: pointer;
+    color: #fff; font-size: 28px; line-height: 1; padding: 4px;
+  }
+
+  .mobile-nav__list {
+    flex: 1;
+    display: flex; flex-direction: column;
+    padding: 0;
+  }
+
+  .mobile-nav__item {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity .4s ease, transform .4s ease;
+  }
+  .mobile-nav.is-open .mobile-nav__item:nth-child(1) { transition-delay: .05s; }
+  .mobile-nav.is-open .mobile-nav__item:nth-child(2) { transition-delay: .12s; }
+  .mobile-nav.is-open .mobile-nav__item:nth-child(3) { transition-delay: .19s; }
+  .mobile-nav.is-open .mobile-nav__item { opacity: 1; transform: translateX(0); }
+
+  .mobile-nav__link {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 26px 28px;
+    font-family: var(--display); font-size: 36px; font-weight: 700;
+    color: #fff; letter-spacing: -0.02em; text-transform: uppercase;
+    width: 100%;
+    background: none; border: none; cursor: pointer; text-align: left;
+    text-decoration: none;
+  }
+  .mobile-nav__link:hover { color: var(--accent); }
+  .mobile-nav__link svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; transition: transform .3s ease; }
+  .mobile-nav__item.is-open .mobile-nav__link svg { transform: rotate(180deg); }
+
+  .mobile-nav__sub {
+    display: none;
+    flex-direction: column;
+    background: rgba(255,255,255,0.03);
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .mobile-nav__item.is-open .mobile-nav__sub { display: flex; }
+  .mobile-nav__sub a {
+    padding: 18px 28px 18px 40px;
+    font-family: var(--sans); font-size: 18px; font-weight: 400;
+    color: rgba(255,255,255,0.7); letter-spacing: 0.01em;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    text-decoration: none;
+  }
+  .mobile-nav__sub a:last-child { border-bottom: none; }
+  .mobile-nav__sub a:hover { color: var(--accent); }
+
+  .mobile-nav__footer {
+    padding: 28px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    flex-shrink: 0;
+  }
+  .mobile-nav__footer a {
+    display: block; text-align: center;
+    font-family: var(--mono); font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(255,255,255,0.5); text-decoration: none;
+  }
+  .mobile-nav__footer a:hover { color: var(--accent); }
 
   /* ============ HERO ============ */
   .hero {
@@ -672,9 +734,36 @@
 </header>
 
 <nav class="mobile-nav" id="mobileNav">
-  <a href="#o-nas" class="mobile-nav-link">O nas</a>
-  <a href="#uslugi" class="mobile-nav-link">Usługi</a>
-  <a href="#realizacje" class="mobile-nav-link">Realizacje</a>
+  <div class="mobile-nav__header">
+    <a href="#" class="mobile-nav__logo">
+      <img src="PlikiStrona/logo.png" alt="Triget" />
+    </a>
+    <button class="mobile-nav__close" id="mobileNavClose" aria-label="Zamknij menu">&#x2715;</button>
+  </div>
+
+  <div class="mobile-nav__list">
+    <div class="mobile-nav__item">
+      <a href="#o-nas" class="mobile-nav__link mobile-nav-link">O nas</a>
+    </div>
+    <div class="mobile-nav__item">
+      <button class="mobile-nav__link mobile-nav__toggle" aria-expanded="false">
+        Usługi
+        <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="mobile-nav__sub">
+        <a href="#uslugi" class="mobile-nav-link">Klient indywidualny</a>
+        <a href="#uslugi" class="mobile-nav-link">Klient biznesowy</a>
+        <a href="#uslugi" class="mobile-nav-link">Przetargi</a>
+      </div>
+    </div>
+    <div class="mobile-nav__item">
+      <a href="#realizacje" class="mobile-nav__link mobile-nav-link">Realizacje</a>
+    </div>
+  </div>
+
+  <div class="mobile-nav__footer">
+    <a href="tel:+48530296373">+48 530 296 373</a>
+  </div>
 </nav>
 
 <main>
@@ -1390,18 +1479,33 @@
 <script>
   (function() {
     const toggle = document.getElementById('navToggle');
+    const closeBtn = document.getElementById('mobileNavClose');
     const nav = document.getElementById('mobileNav');
     if (!toggle || !nav) return;
-    toggle.addEventListener('click', function() {
-      const open = nav.classList.toggle('is-open');
-      toggle.classList.toggle('is-open', open);
-      document.body.style.overflow = open ? 'hidden' : '';
-    });
+
+    function openNav() {
+      nav.classList.add('is-open');
+      toggle.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeNav() {
+      nav.classList.remove('is-open');
+      toggle.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    toggle.addEventListener('click', openNav);
+    if (closeBtn) closeBtn.addEventListener('click', closeNav);
+
     nav.querySelectorAll('.mobile-nav-link').forEach(function(link) {
-      link.addEventListener('click', function() {
-        nav.classList.remove('is-open');
-        toggle.classList.remove('is-open');
-        document.body.style.overflow = '';
+      link.addEventListener('click', closeNav);
+    });
+
+    nav.querySelectorAll('.mobile-nav__toggle').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const item = btn.closest('.mobile-nav__item');
+        const isOpen = item.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', isOpen);
       });
     });
   })();
